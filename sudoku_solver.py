@@ -1,37 +1,73 @@
 import math
 import time
+import sys
 
-def main():
-  
-  sudokutest = [
-      [0,0,0,0,9,0,0,4,0], 
-      [0,1,0,2,4,0,7,0,9], 
-      [0,0,0,7,5,0,0,2,6],
-      [0,5,1,0,0,2,0,0,4],
-      [7,0,2,4,0,5,9,0,1],
-      [9,0,0,3,0,0,5,8,0],
-      [5,9,0,0,2,7,0,0,0],
-      [2,0,3,0,1,9,0,5,0],
-      [0,6,0,0,3,0,0,0,0]
-  ]
-  
-    solved_sudoku = sudoku_solver(sudokutest)
-    if ( not valid_sudoku(solved_sudoku)):
+def test_program():
 
-        i = 0
-        while i < 9:
-            row = solved_sudoku[i]
-            print("{} {} {} | {} {} {} | {} {} {}".format(*row))
-            if (((i + 1) % 3) == 0) and i != 8:
-                print("---------------------")
-            i += 1
+    sudoku_puzzles = [
+        [ # 1
+            [0,0,0, 0,9,0, 0,4,0],
+            [0,1,0, 2,4,0, 7,0,9],
+            [0,0,0, 7,5,0, 0,2,6],
+
+            [0,5,1, 0,0,2, 0,0,4],
+            [7,0,2, 4,0,5, 9,0,1],
+            [9,0,0, 3,0,0, 5,8,0],
+            
+            [5,9,0, 0,2,7, 0,0,0],
+            [2,0,3, 0,1,9, 0,5,0],
+            [0,6,0, 0,3,0, 0,0,0],
+        ],
+        [ # 2
+            [0,7,3, 4,0,0, 1,0,0],
+            [0,9,0, 0,0,0, 0,0,0],
+            [0,1,4, 8,3,0, 7,2,0],
+
+            [0,0,1, 3,0,6, 2,9,4],
+            [0,0,0, 5,0,4, 0,0,0],
+            [4,2,6, 7,0,9, 5,0,0],
+
+            [0,6,5, 0,4,8, 3,7,0],
+            [0,0,0, 0,0,0, 0,8,0],
+            [0,0,8, 0,0,3, 9,6,0]
+        ],
+        [ # 24
+            [0,0,0, 0,0,0, 3,8,2],
+            [4,0,0, 0,3,2, 9,7,6],
+            [0,0,0, 7,0,8, 0,0,5],
+
+            [9,0,8, 2,0,0, 0,5,3],
+            [0,0,6, 0,0,0, 7,0,0],
+            [7,3,0, 0,0,5, 4,0,8],
+
+            [8,0,0, 9,0,4, 0,0,0],
+            [3,2,4, 5,7,0, 0,0,9],
+            [6,7,9, 0,0,0, 0,0,0]
+        ]
+    ]
+    for sudoku in sudoku_puzzles:
+        result = solve_sudoku(sudoku)
+        print_sudoku(result)
+    
+
+def solve_sudoku(puzzle):
+
+    solved_sudoku = sudoku_solver(puzzle)
+    if (valid_sudoku(solved_sudoku)):
+        return(solved_sudoku)
+
     else:
-        print("Solved")
+        print("Sudoku Failed to be solved, Invalid sudoku?")
 
-if __name__ == "__main__":
-    main()
+def print_sudoku(puzzle):
+    i = 0
     
-    
+    while i < 9:
+        row = puzzle[i]
+        print("{} {} {} | {} {} {} | {} {} {}".format(*row))
+        if (((i + 1) % 3) == 0) and i != 8:
+            print("---------------------")
+        i += 1
 
 def count_blanks(puzzle):
     zero_count = 0
@@ -136,5 +172,31 @@ def valid_sudoku(puzzle):
                 return False
     return True
     
+def main():
+    args = sys.argv[1:]
+    if args[0] == "solve":
+        sudoku = []
+        # python solve_sudoku.py solve "000000382 400032976 000708005 908200053 006000700 730005408 800904000 324570009 679000000"
 
+        if ( len(args[1]) == 89 ):
+            sudoku = args[1].split()
+            i = 0
+            while ( (i < 9) and (len(sudoku) == 9) ):
+                sudoku[i] = list(sudoku[i])
+                j = 0
+                while ( j < 9 ):
+                    sudoku[i][j] = int(sudoku[i][j])
+                    j += 1
+                i += 1
+
+        result = solve_sudoku(list(sudoku))
+
+        print_sudoku(result)
+
+    if args[0] == "test":
+        test_program()
+
+
+if __name__ == "__main__":
+    main()
         
